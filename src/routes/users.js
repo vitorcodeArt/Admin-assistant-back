@@ -153,6 +153,23 @@ router.get("/:credentialId/users/:userId", async (req, res) => {
   }
 });
 
+// LISTAR grupos de um usuário
+// GET /api/zendesk/:credentialId/users/:userId/groups
+router.get(":credentialId/users/:userId/groups", async (req, res) => {
+  try {
+    const { credentialId, userId } = req.params;
+    const cred = getCredentialOrThrow(credentialId);
+    const data = await zendeskFetch(
+      cred,
+      `/api/v2/users/${userId}/groups`
+    );
+    res.json(data);
+  } catch (err) {
+    console.error("Erro ao listar grupos do usuário:", err);
+    res.status(err.status || 500).json({ error: err.message });
+  }
+});
+
 // CRIAR usuário
 // POST /api/zendesk/:credentialId/users { user: { name, email, ... } }
 router.post("/:credentialId/users", async (req, res) => {
